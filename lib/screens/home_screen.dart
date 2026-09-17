@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'profile_screen.dart';
 
+//KELAS UTAMA HALAMAN HOME
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //HEADER UTAMA (APP BAR)
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 1,
+        // Informasi Lokasi Pengguna
         title: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -30,7 +33,9 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
+        // Tombol Navigasi Kanan (Profil & Logout)
         actions: [
+          // Ikon Foto Profil
           GestureDetector(
             onTap: () {
               Navigator.of(context).push(
@@ -44,6 +49,8 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
+
+          // Tombol Logout
           IconButton(
             icon: const Icon(Icons.logout, color: Colors.redAccent),
             tooltip: 'Logout',
@@ -77,11 +84,15 @@ class HomeScreen extends StatelessWidget {
           const SizedBox(width: 8),
         ],
       ),
+
+      //KONTEN UTAMA (BODY)
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
+            //KOLOM INPUT PENCARIAN (SEARCH BAR)
             TextField(
               decoration: InputDecoration(
                 hintText: 'Cari restoran atau menu...',
@@ -95,6 +106,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
+           //banner promosi dan AI 
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -134,6 +146,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
+            // daftar kategori kuliner
             const Text(
               'Kategori Kuliner',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -152,6 +165,8 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
+
+            // daftar rekomendasi kuliner 
             const Text(
               'Rekomendasi Restoran',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
