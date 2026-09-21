@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'profile_screen.dart';
+import 'detail_restaurant_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,14 +11,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Controller untuk membaca teks dari Search Bar
+  // Controller untuk membaca input pada Search Bar
   final TextEditingController _searchController = TextEditingController();
 
-  // Variabel untuk menyimpan kata kunci pencarian & kategori aktif
+  // Variabel untuk menampung query pencarian dan kategori yang aktif
   String searchQuery = '';
   String selectedCategory = 'Semua';
 
-  // Daftar 5 Kategori
+  // Daftar 5 Kategori Kuliner
   final List<String> categories = [
     'Semua',
     'Nusantara',
@@ -26,37 +27,66 @@ class _HomeScreenState extends State<HomeScreen> {
     'Healthy',
   ];
 
-  // Data 5 Restoran
-  final List<Map<String, String>> restaurants = [
+  // Data 5 Restoran beserta Daftar Menu Spesifik (Map<String, dynamic>)
+  final List<Map<String, dynamic>> restaurants = [
     {
       'name': 'Resto Nusantara Jaya',
       'category': 'Nusantara',
       'price': 'Rp20k - Rp50k',
       'rating': '4.8',
+      'menus': [
+        {'name': 'Nasi Goreng Spesial', 'price': 25000},
+        {'name': 'Ayam Bakar Madu', 'price': 30000},
+        {'name': 'Soto Ayam Kampung', 'price': 22000},
+        {'name': 'Es Teh Manis', 'price': 5000},
+      ],
     },
     {
       'name': 'Steak & Grill House',
       'category': 'Western',
       'price': 'Rp50k - Rp150k',
       'rating': '4.7',
+      'menus': [
+        {'name': 'Sirloin Steak 200g', 'price': 120000},
+        {'name': 'Chicken Cordon Bleu', 'price': 65000},
+        {'name': 'Spaghetti Carbonara', 'price': 50000},
+        {'name': 'Lemon Tea Ice', 'price': 15000},
+      ],
     },
     {
       'name': 'Ramen & Sushi Master',
       'category': 'Asian',
       'price': 'Rp30k - Rp90k',
       'rating': '4.9',
+      'menus': [
+        {'name': 'Shoyu Ramen Beef', 'price': 55000},
+        {'name': 'Salmon Roll Sushi (8pcs)', 'price': 68000},
+        {'name': 'Chicken Katsu Don', 'price': 45000},
+        {'name': 'Ocha Cold (Free Refill)', 'price': 10000},
+      ],
     },
     {
       'name': 'Green & Healthy Cafe',
       'category': 'Healthy',
       'price': 'Rp35k - Rp80k',
       'rating': '4.6',
+      'menus': [
+        {'name': 'Caesar Salad Chicken', 'price': 48000},
+        {'name': 'Smoothie Bowl Dragonfruit', 'price': 42000},
+        {'name': 'Cold Pressed Green Juice', 'price': 35000},
+      ],
     },
     {
       'name': 'Warung Nasi Padang Sederhana',
       'category': 'Nusantara',
       'price': 'Rp15k - Rp40k',
       'rating': '4.8',
+      'menus': [
+        {'name': 'Nasi Rendang Daging', 'price': 28000},
+        {'name': 'Nasi Ayam Pop', 'price': 25000},
+        {'name': 'Gulai Cincang', 'price': 30000},
+        {'name': 'Es Jeruk Murni', 'price': 8000},
+      ],
     },
   ];
 
@@ -68,17 +98,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Logika gabungan: Menyaring berdasarkan Kategori DAN Kata Kunci Pencarian Nama
+    // Logika penyaringan gabungan (Kategori & Kata Kunci Pencarian)
     final filteredRestaurants = restaurants.where((resto) {
       final matchesCategory = selectedCategory == 'Semua' ||
           resto['category'] == selectedCategory;
-      final matchesSearch = resto['name']!
+      final matchesSearch = resto['name']
+          .toString()
           .toLowerCase()
           .contains(searchQuery.toLowerCase().trim());
       return matchesCategory && matchesSearch;
     }).toList();
 
     return Scaffold(
+      // HEADER UTAMA (APPBAR)
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 1,
@@ -106,6 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         actions: [
+          // Tombol Profil
           GestureDetector(
             onTap: () {
               Navigator.of(context).push(
@@ -119,6 +152,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(width: 8),
+
+          // Tombol Logout
           IconButton(
             icon: const Icon(Icons.logout, color: Colors.redAccent),
             tooltip: 'Logout',
@@ -156,12 +191,14 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(width: 8),
         ],
       ),
+
+      // KONTEN UTAMA (BODY)
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // SEARCH BAR DENGAN EVENT ONCHANGED & CLEAR BUTTON
+            // SEARCH BAR DENGAN TOMBOL CLEAR
             TextField(
               controller: _searchController,
               onChanged: (value) {
@@ -193,7 +230,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 20),
 
-            // BANNER PROMOSI & AI
+            // BANNER PROMOSI & AI MENUBOT
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -240,7 +277,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 24),
 
-            // KATEGORI KULINER
+            // DAFTAR KATEGORI KULINER
             const Text(
               'Kategori Kuliner',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -273,7 +310,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 12),
 
-            // KONDISI JIKA RESTORAN TIDAK DITEMUKAN
+            // TAMPILAN JIKA TIDAK DITEMUKAN / DAFTAR KARTU RESTORAN
             if (filteredRestaurants.isEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 40.0),
@@ -302,11 +339,7 @@ class _HomeScreenState extends State<HomeScreen> {
             else
               Column(
                 children: filteredRestaurants.map((resto) {
-                  return _buildRestaurantCard(
-                    name: resto['name']!,
-                    category: '${resto['category']} • ${resto['price']}',
-                    rating: resto['rating']!,
-                  );
+                  return _buildRestaurantCard(resto);
                 }).toList(),
               ),
           ],
@@ -315,6 +348,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // WIDGET FILTER CHIP
   Widget _buildCategoryChip(String label, bool isSelected) {
     return Container(
       margin: const EdgeInsets.only(right: 8),
@@ -336,60 +370,68 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildRestaurantCard({
-    required String name,
-    required String category,
-    required String rating,
-  }) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 2,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 140,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(12)),
-            ),
-            child: const Center(
-              child: Icon(Icons.store, size: 50, color: Colors.grey),
-            ),
+  // WIDGET KARTU RESTORAN (Kirim data restoran utuh termasuk array 'menus')
+  Widget _buildRestaurantCard(Map<String, dynamic> resto) {
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => DetailRestaurantScreen(restaurant: resto),
           ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      name,
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    Row(
-                      children: [
-                        const Icon(Icons.star, color: Colors.amber, size: 16),
-                        const SizedBox(width: 4),
-                        Text(rating,
-                            style:
-                                const TextStyle(fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(category,
-                    style: const TextStyle(color: Colors.grey, fontSize: 12)),
-              ],
+        );
+      },
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 2,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 140,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(12)),
+              ),
+              child: const Center(
+                child: Icon(Icons.store, size: 50, color: Colors.grey),
+              ),
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        resto['name'] ?? '',
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Row(
+                        children: [
+                          const Icon(Icons.star, color: Colors.amber, size: 16),
+                          const SizedBox(width: 4),
+                          Text(resto['rating'] ?? '0.0',
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${resto['category']} • ${resto['price']}',
+                    style: const TextStyle(color: Colors.grey, fontSize: 12),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
