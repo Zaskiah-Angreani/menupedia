@@ -2,18 +2,75 @@ import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'profile_screen.dart';
 
-//KELAS UTAMA HALAMAN HOME
-class HomeScreen extends StatelessWidget {
+// 1. Mengubah HomeScreen menjadi StatefulWidget agar dapat merespons klik filter
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  // Variabel untuk menyimpan kategori yang aktif (Default: 'Semua')
+  String selectedCategory = 'Semua';
+
+  // Daftar 5 Kategori
+  final List<String> categories = [
+    'Semua',
+    'Nusantara',
+    'Western',
+    'Asian',
+    'Healthy',
+  ];
+
+  // Data 5 Restoran dengan Kategori Berbeda
+  final List<Map<String, String>> restaurants = [
+    {
+      'name': 'Resto Nusantara Jaya',
+      'category': 'Nusantara',
+      'price': 'Rp20k - Rp50k',
+      'rating': '4.8',
+    },
+    {
+      'name': 'Steak & Grill House',
+      'category': 'Western',
+      'price': 'Rp50k - Rp150k',
+      'rating': '4.7',
+    },
+    {
+      'name': 'Ramen & Sushi Master',
+      'category': 'Asian',
+      'price': 'Rp30k - Rp90k',
+      'rating': '4.9',
+    },
+    {
+      'name': 'Green & Healthy Cafe',
+      'category': 'Healthy',
+      'price': 'Rp35k - Rp80k',
+      'rating': '4.6',
+    },
+    {
+      'name': 'Warung Nasi Padang Sederhana',
+      'category': 'Nusantara',
+      'price': 'Rp15k - Rp40k',
+      'rating': '4.8',
+    },
+  ];
+
+  @override
   Widget build(BuildContext context) {
+    // Logika menyaring restoran berdasarkan kategori yang dipilih
+    final filteredRestaurants = selectedCategory == 'Semua'
+        ? restaurants
+        : restaurants
+            .where((resto) => resto['category'] == selectedCategory)
+            .toList();
+
     return Scaffold(
-      //HEADER UTAMA (APP BAR)
+      // HEADER UTAMA (APP BAR)
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 1,
-        // Informasi Lokasi Pengguna
         title: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -27,13 +84,16 @@ class HomeScreen extends StatelessWidget {
                 SizedBox(width: 4),
                 Text(
                   'Medan, Indonesia',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black87),
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
                 ),
               ],
             ),
           ],
         ),
-        // Tombol Navigasi Kanan (Profil & Logout)
         actions: [
           // Ikon Foto Profil
           GestureDetector(
@@ -59,22 +119,26 @@ class HomeScreen extends StatelessWidget {
                 context: context,
                 builder: (context) => AlertDialog(
                   title: const Text('Konfirmasi Logout'),
-                  content: const Text('Apakah Anda yakin ingin keluar dari aplikasi?'),
+                  content: const Text(
+                      'Apakah Anda yakin ingin keluar dari aplikasi?'),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(context),
                       child: const Text('Batal'),
                     ),
                     ElevatedButton(
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                      style:
+                          ElevatedButton.styleFrom(backgroundColor: Colors.red),
                       onPressed: () {
                         Navigator.pop(context);
                         Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (context) => const LoginScreen()),
+                          MaterialPageRoute(
+                              builder: (context) => const LoginScreen()),
                           (route) => false,
                         );
                       },
-                      child: const Text('Logout', style: TextStyle(color: Colors.white)),
+                      child: const Text('Logout',
+                          style: TextStyle(color: Colors.white)),
                     ),
                   ],
                 ),
@@ -85,14 +149,13 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
 
-      //KONTEN UTAMA (BODY)
+      // KONTEN UTAMA (BODY)
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-            //KOLOM INPUT PENCARIAN (SEARCH BAR)
+            // KOLOM INPUT PENCARIAN
             TextField(
               decoration: InputDecoration(
                 hintText: 'Cari restoran atau menu...',
@@ -106,7 +169,8 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-           //banner promosi dan AI 
+
+            // BANNER PROMOSI DAN AI
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -123,7 +187,11 @@ class HomeScreen extends StatelessWidget {
                       children: [
                         Text(
                           'Bingung Pilih Menu?',
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
                         SizedBox(height: 4),
                         Text(
@@ -138,7 +206,9 @@ class HomeScreen extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.orange,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                     child: const Text('Tanya AI'),
                   ),
@@ -146,7 +216,8 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            // daftar kategori kuliner
+
+            // DAFTAR KATEGORI KULINER (INTERAKTIF)
             const Text(
               'Kategori Kuliner',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -155,54 +226,77 @@ class HomeScreen extends StatelessWidget {
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: [
-                  _buildCategoryChip('Semua', true),
-                  _buildCategoryChip('Nusantara', false),
-                  _buildCategoryChip('Western', false),
-                  _buildCategoryChip('Asian', false),
-                  _buildCategoryChip('Healthy', false),
-                ],
+                children: categories.map((category) {
+                  final isSelected = selectedCategory == category;
+                  return _buildCategoryChip(category, isSelected);
+                }).toList(),
               ),
             ),
             const SizedBox(height: 24),
 
-            // daftar rekomendasi kuliner 
-            const Text(
-              'Rekomendasi Restoran',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            // DAFTAR REKOMENDASI RESTORAN (FILTERED)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Rekomendasi Restoran',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  '${filteredRestaurants.length} ditemukan',
+                  style: const TextStyle(color: Colors.grey, fontSize: 12),
+                ),
+              ],
             ),
             const SizedBox(height: 12),
-            _buildRestaurantCard(
-              name: 'Resto Nusantara Jaya',
-              category: 'Nusantara • Rp20k - Rp50k',
-              rating: '4.8',
-            ),
-            _buildRestaurantCard(
-              name: 'Green & Healthy Cafe',
-              category: 'Healthy Food • Rp35k - Rp80k',
-              rating: '4.6',
-            ),
+
+            // Menampilkan daftar restoran sesuai filter
+            if (filteredRestaurants.isEmpty)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 24.0),
+                child: Center(
+                  child: Text('Tidak ada restoran untuk kategori ini.'),
+                ),
+              )
+            else
+              Column(
+                children: filteredRestaurants.map((resto) {
+                  return _buildRestaurantCard(
+                    name: resto['name']!,
+                    category: '${resto['category']} • ${resto['price']}',
+                    rating: resto['rating']!,
+                  );
+                }).toList(),
+              ),
           ],
         ),
       ),
     );
   }
 
+  // WIDGET FILTER CHIP (DENGAN ACTION ONTAP)
   Widget _buildCategoryChip(String label, bool isSelected) {
     return Container(
       margin: const EdgeInsets.only(right: 8),
-      child: Chip(
+      child: ChoiceChip(
         label: Text(label),
-        backgroundColor: isSelected ? Colors.orange : Colors.grey[200],
+        selected: isSelected,
+        selectedColor: Colors.orange,
+        backgroundColor: Colors.grey[200],
         labelStyle: TextStyle(
           color: isSelected ? Colors.white : Colors.black87,
           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        onSelected: (bool selected) {
+          setState(() {
+            selectedCategory = label;
+          });
+        },
       ),
     );
   }
 
+  // WIDGET KARTU RESTORAN
   Widget _buildRestaurantCard({
     required String name,
     required String category,
@@ -219,7 +313,8 @@ class HomeScreen extends StatelessWidget {
             height: 140,
             decoration: BoxDecoration(
               color: Colors.grey[300],
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(12)),
             ),
             child: const Center(
               child: Icon(Icons.store, size: 50, color: Colors.grey),
@@ -235,19 +330,23 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     Text(
                       name,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     Row(
                       children: [
                         const Icon(Icons.star, color: Colors.amber, size: 16),
                         const SizedBox(width: 4),
-                        Text(rating, style: const TextStyle(fontWeight: FontWeight.bold)),
+                        Text(rating,
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ],
                 ),
                 const SizedBox(height: 4),
-                Text(category, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                Text(category,
+                    style: const TextStyle(color: Colors.grey, fontSize: 12)),
               ],
             ),
           ),
