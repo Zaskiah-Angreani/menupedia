@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'profile_screen.dart';
 
-// 1. Mengubah HomeScreen menjadi StatefulWidget agar dapat merespons klik filter
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -11,7 +10,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Variabel untuk menyimpan kategori yang aktif (Default: 'Semua')
+  // Controller untuk membaca teks dari Search Bar
+  final TextEditingController _searchController = TextEditingController();
+
+  // Variabel untuk menyimpan kata kunci pencarian & kategori aktif
+  String searchQuery = '';
   String selectedCategory = 'Semua';
 
   // Daftar 5 Kategori
@@ -23,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
     'Healthy',
   ];
 
-  // Data 5 Restoran dengan Kategori Berbeda
+  // Data 5 Restoran
   final List<Map<String, String>> restaurants = [
     {
       'name': 'Resto Nusantara Jaya',
@@ -58,16 +61,24 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Logika menyaring restoran berdasarkan kategori yang dipilih
-    final filteredRestaurants = selectedCategory == 'Semua'
-        ? restaurants
-        : restaurants
-            .where((resto) => resto['category'] == selectedCategory)
-            .toList();
+    // Logika gabungan: Menyaring berdasarkan Kategori DAN Kata Kunci Pencarian Nama
+    final filteredRestaurants = restaurants.where((resto) {
+      final matchesCategory = selectedCategory == 'Semua' ||
+          resto['category'] == selectedCategory;
+      final matchesSearch = resto['name']!
+          .toLowerCase()
+          .contains(searchQuery.toLowerCase().trim());
+      return matchesCategory && matchesSearch;
+    }).toList();
 
     return Scaffold(
-      // HEADER UTAMA (APP BAR)
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 1,
@@ -95,7 +106,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         actions: [
-          // Ikon Foto Profil
           GestureDetector(
             onTap: () {
               Navigator.of(context).push(
@@ -109,8 +119,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(width: 8),
-
-          // Tombol Logout
           IconButton(
             icon: const Icon(Icons.logout, color: Colors.redAccent),
             tooltip: 'Logout',
@@ -148,18 +156,33 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(width: 8),
         ],
       ),
-
-      // KONTEN UTAMA (BODY)
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // KOLOM INPUT PENCARIAN
+            // SEARCH BAR DENGAN EVENT ONCHANGED & CLEAR BUTTON
             TextField(
+              controller: _searchController,
+              onChanged: (value) {
+                setState(() {
+                  searchQuery = value;
+                });
+              },
               decoration: InputDecoration(
                 hintText: 'Cari restoran atau menu...',
                 prefixIcon: const Icon(Icons.search),
+                suffixIcon: searchQuery.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          setState(() {
+                            _searchController.clear();
+                            searchQuery = '';
+                          });
+                        },
+                      )
+                    : null,
                 filled: true,
                 fillColor: Colors.grey[100],
                 border: OutlineInputBorder(
@@ -170,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 20),
 
-            // BANNER PROMOSI DAN AI
+            // BANNER PROMOSI & AI
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -217,7 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 24),
 
-            // DAFTAR KATEGORI KULINER (INTERAKTIF)
+            // KATEGORI KULINER
             const Text(
               'Kategori Kuliner',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -234,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 24),
 
-            // DAFTAR REKOMENDASI RESTORAN (FILTERED)
+            // REKOMENDASI RESTORAN
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -250,12 +273,30 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 12),
 
-            // Menampilkan daftar restoran sesuai filter
+            // KONDISI JIKA RESTORAN TIDAK DITEMUKAN
             if (filteredRestaurants.isEmpty)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 24.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 40.0),
                 child: Center(
-                  child: Text('Tidak ada restoran untuk kategori ini.'),
+                  child: Column(
+                    children: [
+                      Icon(Icons.search_off, size: 60, color: Colors.grey[400]),
+                      const SizedBox(height: 12),
+                      const Text(
+                        'Restoran tidak tersedia',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        'Coba kata kunci lain atau ubah filter kategori.',
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
+                    ],
+                  ),
                 ),
               )
             else
@@ -274,7 +315,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // WIDGET FILTER CHIP (DENGAN ACTION ONTAP)
   Widget _buildCategoryChip(String label, bool isSelected) {
     return Container(
       margin: const EdgeInsets.only(right: 8),
@@ -296,7 +336,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // WIDGET KARTU RESTORAN
   Widget _buildRestaurantCard({
     required String name,
     required String category,
