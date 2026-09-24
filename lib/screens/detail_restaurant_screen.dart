@@ -226,16 +226,22 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. BANNER / FOTO RESTORAN
-            Container(
-              height: 160,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Center(
-                child: Icon(Icons.store, size: 70, color: Colors.grey),
+            // 1. BANNER / FOTO RESTORAN (Menggunakan Image.asset .jpg)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.asset(
+                widget.restaurant['image'] ?? 'assets/images/nusantara.jpg',
+                height: 160,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  height: 160,
+                  width: double.infinity,
+                  color: Colors.grey[300],
+                  child: const Center(
+                    child: Icon(Icons.broken_image, size: 70, color: Colors.grey),
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -259,7 +265,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
             ),
             const SizedBox(height: 12),
 
-            // Tampilkan daftar menu atau pesan kosong
+            // Tampilkan daftar menu
             menuList.isEmpty
                 ? const Padding(
                     padding: EdgeInsets.symmetric(vertical: 20.0),
@@ -392,7 +398,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // FLOATING BUTTON ala GOJEK (HANYA MUNCUL JIKA ADA PESANAN > 0)
+            // FLOATING BUTTON ala GOJEK
             if (totalItems > 0) ...[
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -447,7 +453,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
               const SizedBox(height: 10),
             ],
 
-            // TOMBOL UTAMA DARI FITUR RESERVASI MEJA
+            // TOMBOL UTAMA FITUR RESERVASI MEJA
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFF6B00),
