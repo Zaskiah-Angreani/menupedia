@@ -98,6 +98,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             );
 
                             Navigator.of(context).pop({
+                              'name': _nameController.text.trim(),
                               'email': _emailController.text.trim(),
                               'password': _passwordController.text,
                             });

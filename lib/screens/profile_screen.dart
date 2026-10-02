@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'edit_profile_screen.dart'; // Import halaman edit profil
+import 'edit_profile_screen.dart';
+import '../models/user_data.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -9,11 +10,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  // State data profil default
-  String _name = 'Alya Defira';
-  String _email = 'user@menupedia.com';
-  String _phone = '+62 812-3456-7890';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,25 +23,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            const Center(
-              child: CircleAvatar(
-                radius: 50,
-                backgroundColor: Color(0xFFFF6B00),
-                child: Icon(Icons.person, size: 60, color: Colors.white),
+
+            const CircleAvatar(
+              radius: 50,
+              backgroundColor: Color(0xFFFF6B00),
+              child: Icon(
+                Icons.person,
+                size: 60,
+                color: Colors.white,
               ),
             ),
+
             const SizedBox(height: 16),
+
             Text(
-              _name,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              UserData.name.isEmpty
+                  ? 'Nama belum diisi'
+                  : UserData.name,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
             ),
+
             Text(
-              _email,
-              style: const TextStyle(fontSize: 14, color: Colors.grey),
+              UserData.email.isEmpty
+                  ? 'Email belum diisi'
+                  : UserData.email,
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
+              ),
             ),
+
             const SizedBox(height: 24),
 
-            // TOMBOL EDIT PROFIL (Menambah layar fungsional ke-8/9)
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFF6B00),
@@ -56,26 +68,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
               icon: const Icon(Icons.edit),
-              label: const Text('Edit Profil', style: TextStyle(fontWeight: FontWeight.bold)),
+              label: const Text(
+                'Edit Profil',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               onPressed: () async {
-                // Membuka EditProfileScreen dan menunggu data kembaliannya
                 final updatedData = await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => EditProfileScreen(
-                      initialName: _name,
-                      initialEmail: _email,
-                      initialPhone: _phone,
+                      initialName: UserData.name,
+                      initialEmail: UserData.email,
+                      initialPhone: UserData.phone,
+                      initialCity: UserData.city,
                     ),
                   ),
                 );
 
-                // Jika data berhasil diubah dan disimpan
                 if (updatedData != null) {
                   setState(() {
-                    _name = updatedData['name'];
-                    _email = updatedData['email'];
-                    _phone = updatedData['phone'];
+                    UserData.name = updatedData['name'];
+                    UserData.email = updatedData['email'];
+                    UserData.phone = updatedData['phone'];
+                    UserData.city = updatedData['city'];
                   });
 
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -87,20 +102,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 }
               },
             ),
+
             const SizedBox(height: 16),
 
             Card(
               child: ListTile(
-                leading: const Icon(Icons.phone, color: Color(0xFFFF6B00)),
+                leading: const Icon(
+                  Icons.phone,
+                  color: Color(0xFFFF6B00),
+                ),
                 title: const Text('Nomor Telepon'),
-                subtitle: Text(_phone),
+                subtitle: Text(
+                  UserData.phone.isEmpty
+                      ? 'Belum diisi'
+                      : UserData.phone,
+                ),
               ),
             ),
+
             Card(
               child: ListTile(
-                leading: const Icon(Icons.location_city, color: Color(0xFFFF6B00)),
+                leading: const Icon(
+                  Icons.location_city,
+                  color: Color(0xFFFF6B00),
+                ),
                 title: const Text('Kota Asal'),
-                subtitle: const Text('Medan, Indonesia'),
+                subtitle: Text(
+                  UserData.city.isEmpty
+                      ? 'Belum diisi'
+                      : UserData.city,
+                ),
               ),
             ),
           ],

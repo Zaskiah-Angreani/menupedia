@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'register_screen.dart';
 import 'home_screen.dart';
+import '../models/user_data.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,9 +14,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-  String? registeredEmail;
-  String? registeredPassword;
 
   @override
   Widget build(BuildContext context) {
@@ -101,17 +99,24 @@ class _LoginScreenState extends State<LoginScreen> {
                             final inputEmail = _emailController.text.trim();
                             final inputPassword = _passwordController.text;
 
-                            if (registeredEmail == null || registeredPassword == null) {
+                            if (UserData.email.isEmpty || UserData.password.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('Akun belum terdaftar! Silakan registrasi terlebih dahulu.'),
+                                  content: Text(
+                                    'Akun belum terdaftar! Silakan registrasi terlebih dahulu.',
+                                  ),
                                   backgroundColor: Colors.red,
                                 ),
                               );
-                            } else if (inputEmail != registeredEmail || inputPassword != registeredPassword) {
+                            } else if (
+                            inputEmail != UserData.email ||
+                                inputPassword != UserData.password
+                            ) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('Email atau Password salah! Sesuaikan dengan data registrasi.'),
+                                  content: Text(
+                                    'Email atau Password salah! Sesuaikan dengan data registrasi.',
+                                  ),
                                   backgroundColor: Colors.deepOrange,
                                 ),
                               );
@@ -153,10 +158,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
                               if (result != null) {
                                 setState(() {
-                                  registeredEmail = result['email'];
-                                  registeredPassword = result['password'];
-                                  _emailController.text = registeredEmail!;
-                                  _passwordController.text = registeredPassword!;
+                                  UserData.name = result['name'] ?? '';
+                                  UserData.email = result['email'] ?? '';
+                                  UserData.password = result['password'] ?? '';
+
+                                  _emailController.text = UserData.email;
+                                  _passwordController.text = UserData.password;
                                 });
                               }
                             },
