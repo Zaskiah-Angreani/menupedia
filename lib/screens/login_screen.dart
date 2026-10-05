@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'register_screen.dart';
 import 'home_screen.dart';
+import 'admin_screen.dart'; // Tambahan import halaman admin
 import '../models/user_data.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -63,6 +64,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (value == null || value.trim().isEmpty) {
                             return 'Email tidak boleh kosong';
                           }
+                          // Izinkan email khusus admin
+                          if (value.trim() == 'admin@menupedia.com') {
+                            return null;
+                          }
                           if (!value.trim().endsWith('@gmail.com')) {
                             return 'Email harus menggunakan @gmail.com';
                           }
@@ -84,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (value == null || value.isEmpty) {
                             return 'Password tidak boleh kosong';
                           }
-                          if (value.length < 8) {
+                          if (value.length < 8 && _emailController.text.trim() != 'admin@menupedia.com') {
                             return 'Password minimal harus 8 karakter/angka';
                           }
                           return null;
@@ -99,7 +104,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             final inputEmail = _emailController.text.trim();
                             final inputPassword = _passwordController.text;
 
-                            if (UserData.email.isEmpty || UserData.password.isEmpty) {
+                            // 1. CEK LOGIN ADMIN KHUSUS
+                            if (inputEmail == 'admin@menupedia.com' && inputPassword == 'admin123') {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (context) => const AdminScreen(),
+                                ),
+                              );
+                            } 
+                            // 2. CEK USER BIASA BERDASARKAN UserData
+                            else if (UserData.email.isEmpty || UserData.password.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text(
@@ -109,8 +123,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               );
                             } else if (
-                            inputEmail != UserData.email ||
-                                inputPassword != UserData.password
+                              inputEmail != UserData.email ||
+                              inputPassword != UserData.password
                             ) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
