@@ -3,7 +3,7 @@ import '../services/auth_service.dart';
 import 'login_screen.dart';
 
 class AdminScreen extends StatefulWidget {
-  final List<Map<String, dynamic>>? restaurants;
+  final List<dynamic>? restaurants;
 
   const AdminScreen({
     super.key,
@@ -15,23 +15,171 @@ class AdminScreen extends StatefulWidget {
 }
 
 class _AdminScreenState extends State<AdminScreen> {
-  late List<Map<String, dynamic>> _restaurantList;
+  late List<dynamic> _restaurantList;
 
   @override
   void initState() {
     super.initState();
     _restaurantList = widget.restaurants ?? [
       {
-        'id': '1',
-        'name': 'Tip Top Restaurant',
-        'category': 'Kuliner Legendaris Medan',
-        'image': 'assets/images/tiptop.png',
+        'id': 'resto_01',
+        'name': 'Soto Medan Kesawan',
+        'category': 'Nusantara',
+        'price': 'Rp25k - Rp50k',
+        'rating': '4.8',
+        'image': 'assets/images/sotokesawan2.jpg',
+        'isFullBooked': false,
+        'menus': [
+          {'name': 'Soto Udang Kesawan', 'price': 35000},
+          {'name': 'Soto Daging Sapi', 'price': 32000},
+          {'name': 'Soto Ayam Kampung', 'price': 28000},
+          {'name': 'Es Teh Manis', 'price': 5000},
+          {'name': 'Teh Tawar Hangat', 'price': 3000},
+        ],
       },
       {
-        'id': '2',
-        'name': 'Bihun Bebek Asie',
-        'category': 'Kuliner Malam Medan',
-        'image': 'assets/images/bihun_bebek.png',
+        'id': 'resto_02',
+        'name': 'Bihun Bebek Asie Medan',
+        'category': 'Nusantara',
+        'price': 'Rp40k - Rp95k',
+        'rating': '4.9',
+        'image': 'assets/images/bihunbebek.jpg',
+        'isFullBooked': false,
+        'menus': [
+          {'name': 'Bihun Bebek Kuah Herbal Spesial', 'price': 75000},
+          {'name': 'Bihun Bebek Setengah Porsi', 'price': 45000},
+          {'name': 'Sup Daging Bebek Polos', 'price': 70000},
+          {'name': 'Teh Manis Hangat', 'price': 5000},
+          {'name': 'Air Mineral', 'price': 5000},
+        ],
+      },
+      {
+        'id': 'resto_03',
+        'name': 'Tip Top Restaurant Medan',
+        'category': 'Western',
+        'price': 'Rp40k - Rp120k',
+        'rating': '4.7',
+        'image': 'assets/images/tiptop.png',
+        'isFullBooked': false,
+        'menus': [
+          {'name': 'Biterballen Klasik Tip Top', 'price': 45000},
+          {'name': 'Oxtail Soup (Sup Buntut Sapi)', 'price': 95000},
+          {'name': 'Chicken Steak Classic', 'price': 65000},
+          {'name': 'Es Soda Gembira', 'price': 25000},
+          {'name': 'Lemon Tea', 'price': 18000},
+        ],
+      },
+      {
+        'id': 'resto_04',
+        'name': 'The Stage Cafe & Resto Medan',
+        'category': 'Western',
+        'price': 'Rp30k - Rp90k',
+        'rating': '4.6',
+        'image': 'assets/images/thestage.jpg',
+        'isFullBooked': false,
+        'menus': [
+          {'name': 'Mushroom Cream Soup', 'price': 35000},
+          {'name': 'Aglio Olio Smoked Beef', 'price': 48000},
+          {'name': 'Chicken Parmigiana', 'price': 62000},
+          {'name': 'Lychee Tea Refreshment', 'price': 25000},
+          {'name': 'Mineral Water', 'price': 8000},
+        ],
+      },
+      {
+        'id': 'resto_05',
+        'name': 'Ta Wan Restaurant Sun Plaza Medan',
+        'category': 'Asian',
+        'price': 'Rp30k - Rp85k',
+        'rating': '4.8',
+        'image': 'assets/images/tawan.webp',
+        'isFullBooked': false,
+        'menus': [
+          {'name': 'Bubur Spesial Century Egg & Ayam', 'price': 35000},
+          {'name': 'Mie Hongkong Daging Sapi', 'price': 52000},
+          {'name': 'Udang Goreng Tepung Asam Manis', 'price': 68000},
+          {'name': 'Chinese Tea (Pot)', 'price': 15000},
+          {'name': 'Es Jeruk Mandarin', 'price': 22000},
+        ],
+      },
+      {
+        'id': 'resto_06',
+        'name': 'Gyukaku Japanese BBQ Medan',
+        'category': 'Asian',
+        'price': 'Rp150k - Rp350k',
+        'rating': '4.9',
+        'image': 'assets/images/gyukaku.jpg',
+        'isFullBooked': false,
+        'menus': [
+          {'name': 'Standard Buffet Package', 'price': 238000},
+          {'name': 'Gyu-Kaku Karubi (Beef)', 'price': 65000},
+          {'name': 'King Karubi', 'price': 85000},
+          {'name': 'Ocha Cold Refill', 'price': 15000},
+          {'name': 'Lemonade Squash', 'price': 28000},
+        ],
+      },
+      {
+        'id': 'resto_07',
+        'name': 'Re Juve Healthy Bar Medan',
+        'category': 'Healthy',
+        'price': 'Rp40k - Rp85k',
+        'rating': '4.8',
+        'image': 'assets/images/rejuve.jpg',
+        'isFullBooked': false,
+        'menus': [
+          {'name': 'Glory Green Cold-Pressed Juice', 'price': 55000},
+          {'name': 'Iis Happy Green Juice', 'price': 55000},
+          {'name': 'Ultimate Golden Clarify', 'price': 60000},
+          {'name': 'Tropical Turmeric Shot', 'price': 30000},
+          {'name': 'Detox Green Water', 'price': 35000},
+        ],
+      },
+      {
+        'id': 'resto_08',
+        'name': 'Suisse Bakery & Cafe Medan',
+        'category': 'Healthy',
+        'price': 'Rp15k - Rp50k',
+        'rating': '4.7',
+        'image': 'assets/images/tabona.jpg',
+        'isFullBooked': false,
+        'menus': [
+          {'name': 'Whole Wheat Bread Loaf', 'price': 28000},
+          {'name': 'Chicken Salad Sandwich Wheat', 'price': 35000},
+          {'name': 'Avocado Toast Whole Grain', 'price': 38000},
+          {'name': 'Fresh Carrot Juice', 'price': 22000},
+          {'name': 'Mineral Water Organic', 'price': 8000},
+        ],
+      },
+      {
+        'id': 'resto_09',
+        'name': 'Lontong Kak Lin Medan',
+        'category': 'Nusantara',
+        'price': 'Rp15k - Rp35k',
+        'rating': '4.8',
+        'image': 'assets/images/lontong.jpg',
+        'isFullBooked': false,
+        'menus': [
+          {'name': 'Lontong Sayur Komplit Medan', 'price': 22000},
+          {'name': 'Lontong Pecel Lele/Ayam', 'price': 25000},
+          {'name': 'Nasi Sayur Medan', 'price': 20000},
+          {'name': 'Es Jeruk Peras Murni', 'price': 8000},
+          {'name': 'Kopi Hitam Tradisional', 'price': 10000},
+        ],
+      },
+      {
+        'id': 'resto_10',
+        'name': 'Merdeka Walk Bistro',
+        'category': 'Western',
+        'price': 'Rp35k - Rp100k',
+        'rating': '4.6',
+        'image': 'assets/images/merdekawalk.jpg',
+        'isFullBooked': false,
+        'menus': [
+          {'name': 'Sirloin Steak Lokal', 'price': 85000},
+          {'name': 'Chicken Cordon Bleu', 'price': 65000},
+          {'name': 'Spaghetti Bolognese', 'price': 50000},
+          {'name': 'Milkshake Chocolate', 'price': 30000},
+          {'name': 'Mineral Water', 'price': 7000},
+        ],
       },
     ];
   }
@@ -62,7 +210,7 @@ class _AdminScreenState extends State<AdminScreen> {
 
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => const LoginScreen()),
-          (route) => false,
+      (route) => false,
     );
   }
 
@@ -70,30 +218,61 @@ class _AdminScreenState extends State<AdminScreen> {
     final isEditing = restaurant != null;
     final nameController = TextEditingController(text: restaurant?['name'] ?? '');
     final categoryController = TextEditingController(text: restaurant?['category'] ?? '');
+    final menuNameController = TextEditingController();
+    final menuPriceController = TextEditingController();
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(isEditing ? 'Edit Restoran' : 'Tambah Restoran Baru'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(
-                labelText: 'Nama Restoran',
-                border: OutlineInputBorder(),
+        title: Text(isEditing ? 'Edit Restoran' : 'Tambah Restoran & Menu Baru'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Nama Restoran',
+                  border: OutlineInputBorder(),
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: categoryController,
-              decoration: const InputDecoration(
-                labelText: 'Kategori Kuliner',
-                border: OutlineInputBorder(),
+              const SizedBox(height: 12),
+              TextField(
+                controller: categoryController,
+                decoration: const InputDecoration(
+                  labelText: 'Kategori Kuliner (misal: Nusantara)',
+                  border: OutlineInputBorder(),
+                ),
               ),
-            ),
-          ],
+              if (!isEditing) ...[
+                const SizedBox(height: 16),
+                const Divider(),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('Menu Utama Restoran:', style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: menuNameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nama Menu / Hidangan',
+                    hintText: 'Contoh: Nasi Goreng Special',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: menuPriceController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Harga Menu (Rp)',
+                    hintText: 'Contoh: 25000',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ],
+            ],
+          ),
         ),
         actions: [
           TextButton(
@@ -107,30 +286,41 @@ class _AdminScreenState extends State<AdminScreen> {
             ),
             onPressed: () {
               if (nameController.text.isNotEmpty && categoryController.text.isNotEmpty) {
+                final parsedPrice = int.tryParse(menuPriceController.text) ?? 20000;
+                final menuName = menuNameController.text.isNotEmpty
+                    ? menuNameController.text
+                    : 'Menu Utama Restoran';
+
                 setState(() {
                   if (isEditing) {
                     final index = _restaurantList.indexWhere((r) => r['id'] == restaurant['id']);
                     if (index != -1) {
                       _restaurantList[index] = {
-                        'id': restaurant['id'],
+                        ..._restaurantList[index],
                         'name': nameController.text,
                         'category': categoryController.text,
-                        'image': restaurant['image'] ?? 'assets/images/tiptop.png',
                       };
                     }
                   } else {
                     _restaurantList.add({
-                      'id': DateTime.now().millisecondsSinceEpoch.toString(),
+                      'id': 'resto_${DateTime.now().millisecondsSinceEpoch}',
                       'name': nameController.text,
                       'category': categoryController.text,
+                      'price': 'Rp20k - Rp75k',
+                      'rating': '4.5',
                       'image': 'assets/images/tiptop.png',
+                      'isFullBooked': false,
+                      'menus': [
+                        {'name': menuName, 'price': parsedPrice},
+                        {'name': 'Es Teh Manis', 'price': 5000},
+                      ],
                     });
                   }
                 });
                 Navigator.pop(context);
               }
             },
-            child: Text(isEditing ? 'Simpan' : 'Tambah'),
+            child: Text(isEditing ? 'Simpan' : 'Tambah Restoran'),
           ),
         ],
       ),
@@ -204,14 +394,14 @@ class _AdminScreenState extends State<AdminScreen> {
                   ),
                   const SizedBox(height: 6),
                   const Text(
-                    'Kelola daftar restoran dan pusat kuliner dengan cepat melalui panel ini.',
+                    'Kelola daftar 10 restoran dan menu kuliner dengan cepat melalui panel ini.',
                     style: TextStyle(color: Colors.white70, fontSize: 13),
                   ),
                   const SizedBox(height: 16),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
-                      color: Colors.white   .withValues(alpha: 0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -224,7 +414,7 @@ class _AdminScreenState extends State<AdminScreen> {
             ),
             const SizedBox(height: 24),
             const Text(
-              'Daftar Restoran',
+              'Daftar Restoran & Menu',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
             ),
             const SizedBox(height: 12),
@@ -247,6 +437,8 @@ class _AdminScreenState extends State<AdminScreen> {
                     itemCount: _restaurantList.length,
                     itemBuilder: (context, index) {
                       final resto = _restaurantList[index];
+                      final menus = resto['menus'] ?? [];
+
                       return Container(
                         margin: const EdgeInsets.only(bottom: 12),
                         decoration: BoxDecoration(
@@ -254,25 +446,25 @@ class _AdminScreenState extends State<AdminScreen> {
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey   .withValues(alpha: 0.1),
+                              color: Colors.grey.withValues(alpha: 0.1),
                               spreadRadius: 1,
                               blurRadius: 6,
                               offset: const Offset(0, 3),
                             ),
                           ],
                         ),
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.all(12),
+                        child: ExpansionTile(
+                          tilePadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                           leading: ClipRRect(
                             borderRadius: BorderRadius.circular(8),
                             child: Image.asset(
                               resto['image'] ?? 'assets/images/tiptop.png',
-                              width: 60,
-                              height: 60,
+                              width: 50,
+                              height: 50,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) => Container(
-                                width: 60,
-                                height: 60,
+                                width: 50,
+                                height: 50,
                                 color: Colors.orange.shade100,
                                 child: const Icon(Icons.restaurant, color: Color(0xFFFF6B00)),
                               ),
@@ -282,12 +474,9 @@ class _AdminScreenState extends State<AdminScreen> {
                             resto['name'] ?? '',
                             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                           ),
-                          subtitle: Padding(
-                            padding: const EdgeInsets.only(top: 4),
-                            child: Text(
-                              resto['category'] ?? '',
-                              style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
-                            ),
+                          subtitle: Text(
+                            'Kategori: ${resto['category']} | ${menus.length} Menu',
+                            style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                           ),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -302,6 +491,36 @@ class _AdminScreenState extends State<AdminScreen> {
                               ),
                             ],
                           ),
+                          children: [
+                            Container(
+                              color: Colors.grey.shade50,
+                              padding: const EdgeInsets.all(12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Daftar Menu Hidangan:',
+                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  ...((menus as Iterable).map((m) => Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 2.0),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text('• ${m['name']}', style: const TextStyle(fontSize: 13)),
+                                            Text('Rp ${m['price']}',
+                                                style: const TextStyle(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Color(0xFFFF6B00))),
+                                          ],
+                                        ),
+                                      ))),
+                                ],
+                              ),
+                            )
+                          ],
                         ),
                       );
                     },
