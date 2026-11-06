@@ -86,9 +86,9 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.orange.withOpacity(0.1),
+                  color: Colors.orange.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.orange.withOpacity(0.3)),
+                  border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
                 ),
                 child: Row(
                   children: [
@@ -118,7 +118,7 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                   hintText: 'Masukkan nama lengkap',
                   prefixIcon: const Icon(Icons.person_outline),
                   filled: true,
-                  fillColor: Colors.grey[150],
+                  fillColor: Colors.grey[100],
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
                 ),
                 validator: (value) {
@@ -132,11 +132,11 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
               const Text('Jumlah Kursi / Tamu', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
               const SizedBox(height: 8),
               DropdownButtonFormField<int>(
-                value: _selectedGuests,
+                initialValue: _selectedGuests,
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.group_outlined),
                   filled: true,
-                  fillColor: Colors.grey[150],
+                  fillColor: Colors.grey[100],
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
                 ),
                 items: List.generate(10, (index) => index + 1).map((int value) {
@@ -165,7 +165,7 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                             decoration: BoxDecoration(
-                              color: Colors.grey[150],
+                              color: Colors.grey[100],
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Row(
@@ -193,7 +193,7 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                             decoration: BoxDecoration(
-                              color: Colors.grey[150],
+                              color: Colors.grey[100],
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Row(
@@ -219,7 +219,7 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                 decoration: InputDecoration(
                   hintText: 'Contoh: Minta dekat jendela, kursi bayi, dll.',
                   filled: true,
-                  fillColor: Colors.grey[150],
+                  fillColor: Colors.grey[100],
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
                 ),
               ),

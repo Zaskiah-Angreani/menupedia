@@ -145,7 +145,7 @@ class _ReservationHistoryScreenState extends State<ReservationHistoryScreen> {
                               decoration: BoxDecoration(
                                 color: Colors.green[50],
                                 borderRadius: BorderRadius.circular(6),
-                                border: Border.all(color: Colors.green.withOpacity(0.3)),
+                                border: Border.all(color: Colors.green   .withValues(alpha: 0.3)),
                               ),
                               child: const Text('Aktif', style: TextStyle(color: Colors.green, fontSize: 12, fontWeight: FontWeight.bold)),
                             ),

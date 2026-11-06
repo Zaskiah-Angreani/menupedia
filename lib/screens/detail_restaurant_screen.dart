@@ -253,7 +253,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withOpacity(0.08),
+                              color: Colors.grey   .withValues(alpha: 0.08),
                               spreadRadius: 1,
                               blurRadius: 4,
                               offset: const Offset(0, 2),
@@ -352,6 +352,9 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
 
                       if (hasilReservasi != null) {
                         widget.onReservationAdded(hasilReservasi); // Kirim ke HomeScreen
+
+                        if (!context.mounted) return; // <- tambahan
+
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('Reservasi berhasil disimpan ke riwayat!'),

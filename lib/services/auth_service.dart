@@ -48,7 +48,14 @@ class AuthService {
     return data['role'] ?? 'user';
   }
 
-  Future<void> logout() => _auth.signOut();
+  Future<void> logout() async {
+    await _auth.signOut();
+    UserData.name = '';
+    UserData.email = '';
+    UserData.password = '';
+    UserData.phone = '';
+    UserData.city = '';
+  }
 
   static String errorMessage(FirebaseAuthException e) {
     switch (e.code) {
