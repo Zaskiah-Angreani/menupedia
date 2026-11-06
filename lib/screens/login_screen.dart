@@ -4,6 +4,7 @@ import '../services/auth_service.dart';
 import 'register_screen.dart';
 import 'home_screen.dart';
 import 'admin_screen.dart';
+import 'admin_resto_dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -30,6 +31,18 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final email = _emailController.text.trim().toLowerCase();
+
+    // Redireksi khusus Admin Resto
+    if (email == 'resto1@menupedia.com') {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const AdminRestoDashboardScreen(restaurantId: 'resto_01'),
+        ),
+      );
+      return;
+    }
+
     setState(() => _isLoading = true);
     try {
       final role = await AuthService().login(
@@ -41,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) =>
-          role == 'admin' ? const AdminScreen() : const HomeScreen(),
+              role == 'admin' ? const AdminScreen() : const HomeScreen(),
         ),
       );
     } on FirebaseAuthException catch (e) {
@@ -57,18 +70,18 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> _openRegister() async {
-    final result = await Navigator.of(context).push<Map<String, String>>(
-      MaterialPageRoute(builder: (context) => const RegisterScreen()),
-    );
+ Future<void> _openRegister() async {
+  final result = await Navigator.of(context).push(
+    MaterialPageRoute(builder: (context) => const RegisterScreen()),
+  );
 
-    if (result != null) {
-      setState(() {
-        _emailController.text = result['email'] ?? '';
-        _passwordController.clear();
-      });
-    }
+  if (result != null && result is Map<String, String>) {
+    setState(() {
+      _emailController.text = result['email'] ?? '';
+      _passwordController.clear();
+    });
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -118,13 +131,19 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (value == null || value.trim().isEmpty) {
                             return 'Email tidak boleh kosong';
                           }
-                          // Izinkan email khusus admin
-                          if (value.trim() == _adminEmail) {
+                          
+                          final email = value.trim().toLowerCase();
+                          
+                          // Izinkan email khusus Admin Utama & Admin Resto
+                          if (email == 'admin@menupedia.com' || email == 'resto1@menupedia.com') {
                             return null;
                           }
-                          if (!value.trim().endsWith('@gmail.com')) {
-                            return 'Email harus menggunakan @gmail.com';
+                          
+                          // Validasi format email standar untuk User biasa
+                          if (!email.contains('@') || !email.contains('.')) {
+                            return 'Format email tidak valid';
                           }
+                          
                           return null;
                         },
                       ),
