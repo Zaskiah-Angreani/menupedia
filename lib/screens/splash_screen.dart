@@ -1,6 +1,9 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../services/auth_service.dart';
 import 'login_screen.dart';
+import 'home_screen.dart';
+import 'admin_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,11 +16,27 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 3), () {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
-      );
-    });
+    _goNext();
+  }
+
+  Future<void> _goNext() async {
+    await Future.delayed(const Duration(seconds: 3));
+
+    Widget next = const LoginScreen();
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        final role = await AuthService().loadUserData(user.uid);
+        next = role == 'admin' ? const AdminScreen() : const HomeScreen();
+      } catch (_) {
+        // Gagal ambil data (misal offline) -> tetap ke halaman login
+      }
+    }
+
+    if (!mounted) return;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => next),
+    );
   }
 
   @override

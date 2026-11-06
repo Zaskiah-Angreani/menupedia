@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../services/auth_service.dart';
 import 'register_screen.dart';
 import 'home_screen.dart';
-import 'admin_screen.dart'; // Tambahan import halaman admin
-import '../models/user_data.dart';
+import 'admin_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,6 +16,59 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
+
+  static const String _adminEmail = 'admin@menupedia.com';
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _login() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+    try {
+      final role = await AuthService().login(
+        _emailController.text.trim(),
+        _passwordController.text,
+      );
+
+      if (!mounted) return;
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) =>
+          role == 'admin' ? const AdminScreen() : const HomeScreen(),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AuthService.errorMessage(e)),
+          backgroundColor: Colors.deepOrange,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _openRegister() async {
+    final result = await Navigator.of(context).push<Map<String, String>>(
+      MaterialPageRoute(builder: (context) => const RegisterScreen()),
+    );
+
+    if (result != null) {
+      setState(() {
+        _emailController.text = result['email'] ?? '';
+        _passwordController.clear();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             return 'Email tidak boleh kosong';
                           }
                           // Izinkan email khusus admin
-                          if (value.trim() == 'admin@menupedia.com') {
+                          if (value.trim() == _adminEmail) {
                             return null;
                           }
                           if (!value.trim().endsWith('@gmail.com')) {
@@ -89,7 +143,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (value == null || value.isEmpty) {
                             return 'Password tidak boleh kosong';
                           }
-                          if (value.length < 8 && _emailController.text.trim() != 'admin@menupedia.com') {
+                          if (value.length < 8 &&
+                              _emailController.text.trim() != _adminEmail) {
                             return 'Password minimal harus 8 karakter/angka';
                           }
                           return null;
@@ -99,55 +154,21 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       // Tombol Login
                       ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            final inputEmail = _emailController.text.trim();
-                            final inputPassword = _passwordController.text;
-
-                            // 1. CEK LOGIN ADMIN KHUSUS
-                            if (inputEmail == 'admin@menupedia.com' && inputPassword == 'admin123') {
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (context) => const AdminScreen(),
-                                ),
-                              );
-                            } 
-                            // 2. CEK USER BIASA BERDASARKAN UserData
-                            else if (UserData.email.isEmpty || UserData.password.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Akun belum terdaftar! Silakan registrasi terlebih dahulu.',
-                                  ),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                            } else if (
-                              inputEmail != UserData.email ||
-                              inputPassword != UserData.password
-                            ) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Email atau Password salah! Sesuaikan dengan data registrasi.',
-                                  ),
-                                  backgroundColor: Colors.deepOrange,
-                                ),
-                              );
-                            } else {
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (context) => const HomeScreen(),
-                                ),
-                              );
-                            }
-                          }
-                        },
+                        onPressed: _isLoading ? null : _login,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFFF6B00),
                           padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
-                        child: const Text(
+                        child: _isLoading
+                            ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                            : const Text(
                           'LOGIN',
                           style: TextStyle(
                             color: Colors.white,
@@ -163,24 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           const Text('Belum punya akun?'),
                           TextButton(
-                            onPressed: () async {
-                              final result = await Navigator.of(context).push<Map<String, String>>(
-                                MaterialPageRoute(
-                                  builder: (context) => const RegisterScreen(),
-                                ),
-                              );
-
-                              if (result != null) {
-                                setState(() {
-                                  UserData.name = result['name'] ?? '';
-                                  UserData.email = result['email'] ?? '';
-                                  UserData.password = result['password'] ?? '';
-
-                                  _emailController.text = UserData.email;
-                                  _passwordController.text = UserData.password;
-                                });
-                              }
-                            },
+                            onPressed: _openRegister,
                             child: const Text(
                               'Daftar Sekarang',
                               style: TextStyle(color: Color(0xFFFF6B00)),
